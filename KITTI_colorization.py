@@ -9,10 +9,10 @@ import time
 from operator import itemgetter
 from skimage import io
 
-from modules import ply
+import ply
 
 
-ROOT_DIR = "KITTI_Dataset_CARLA_v993f440b/Town01"
+ROOT_DIR = "../../results_kitti_carla/KITTI_Dataset_CARLA_v0.9.13/Carla/Maps/Town05"
 
 
 def main():

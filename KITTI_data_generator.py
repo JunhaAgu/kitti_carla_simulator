@@ -5,8 +5,7 @@ from pathlib import Path
 import random
 
 try:
-    sys.path.append(glob.glob('%s/PythonAPI/carla/dist/carla-*%d.%d-%s.egg' % (
-        "C:/CARLA_0.9.10/WindowsNoEditor" if os.name == 'nt' else str(Path.home()) + "/CARLA_0.9.10",
+    sys.path.append(glob.glob('/home/junhakim/CARLA/PythonAPI/carla/dist/carla-*%d.%d-%s.egg' % (
         sys.version_info.major,
         sys.version_info.minor,
         'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
@@ -16,14 +15,14 @@ except IndexError:
 import carla
 import time
 from datetime import date
-from modules import generator_KITTI as gen
+import generator_KITTI as gen
 
 def main():
     start_record_full = time.time()
 
     fps_simu = 1000.0
     time_stop = 2.0
-    nbr_frame = 5000 #MAX = 10000
+    nbr_frame = 10 #MAX = 10000
     nbr_walkers = 50
     nbr_vehicles = 50
 
@@ -40,11 +39,11 @@ def main():
         client = carla.Client('localhost', 2000)
         init_settings = carla.WorldSettings()
         
-        for i_map in [0, 1, 2, 3, 4, 5, 6]: #7 maps from Town01 to Town07
+        for i_map in [4]: #[0, 1, 2, 3, 4, 5, 6]: #7 maps from Town01 to Town07
             client.set_timeout(100.0)
             print("Map Town0"+str(i_map+1))
             world = client.load_world("Town0"+str(i_map+1))
-            folder_output = "KITTI_Dataset_CARLA_v%s/%s/generated" %(client.get_client_version(), world.get_map().name)
+            folder_output = "../../results_kitti_carla/KITTI_Dataset_CARLA_v%s/%s/generated" %(client.get_client_version(), world.get_map().name)
             os.makedirs(folder_output) if not os.path.exists(folder_output) else [os.remove(f) for f in glob.glob(folder_output+"/*") if os.path.isfile(f)]
             client.start_recorder(os.path.dirname(os.path.realpath(__file__))+"/"+folder_output+"/recording.log")
             
