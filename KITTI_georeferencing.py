@@ -13,9 +13,9 @@ DETECT_STOP_VEHICLE = True
 STOP_VEHICLE_VELOCITY_NORM = 0.3 #same parameter as in npm_georef for L3D2
 
 ADD_LIDAR_NOISE = False
-SIGMA_LIDAR_NOISE = 0.0 #0.03 = std dev of the Velodyne HDL64E
+SIGMA_LIDAR_NOISE = 0.03 #0.03 = std dev of the Velodyne HDL64E
 
-ROOT_DIR = "../../results_kitti_carla/KITTI_Dataset_CARLA_v0.9.13/Carla/Maps/Town05"
+ROOT_DIR = "../../results_kitti_carla/KITTI_Dataset_CARLA_v0.9.13/Carla/Maps/Town01"
 
 
 def main():

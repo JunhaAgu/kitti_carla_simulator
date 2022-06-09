@@ -22,7 +22,7 @@ def main():
 
     fps_simu = 1000.0
     time_stop = 2.0
-    nbr_frame = 10 #MAX = 10000
+    nbr_frame = 300 #MAX = 10000
     nbr_walkers = 50
     nbr_vehicles = 50
 
@@ -37,9 +37,10 @@ def main():
 
     try:
         client = carla.Client('localhost', 2000)
+        client.set_timeout(2.0) # seconds
         init_settings = carla.WorldSettings()
         
-        for i_map in [4]: #[0, 1, 2, 3, 4, 5, 6]: #7 maps from Town01 to Town07
+        for i_map in [1, 2, 3, 4]: #[0, 1, 2, 3, 4, 5, 6]: #7 maps from Town01 to Town07
             client.set_timeout(100.0)
             print("Map Town0"+str(i_map+1))
             world = client.load_world("Town0"+str(i_map+1))
@@ -48,7 +49,9 @@ def main():
             client.start_recorder(os.path.dirname(os.path.realpath(__file__))+"/"+folder_output+"/recording.log")
             
             # Weather
-            world.set_weather(carla.WeatherParameters.WetCloudyNoon)
+            world.set_weather(carla.WeatherParameters.ClearNoon) #WetCloudyNoon
+            # ClearNoon, CloudyNoon, WetNoon, WetCloudyNoon, SoftRainNoon, MidRainyNoon, HardRainNoon, 
+            # ClearSunset, CloudySunset, WetSunset, WetCloudySunset, SoftRainSunset, MidRainSunset, HardRainSunset.
             
             # Set Synchronous mode
             settings = world.get_settings()
@@ -70,7 +73,8 @@ def main():
 
             # Spawn vehicles and walkers
             gen.spawn_npc(client, nbr_vehicles, nbr_walkers, vehicles_list, all_walkers_id)
-
+            print("spawn_npc is generated") #agu
+            
             # Wait for KITTI to stop
             start = world.get_snapshot().timestamp.elapsed_seconds
             print("Waiting for KITTI to stop ...")
@@ -117,7 +121,8 @@ def main():
 
             # Launch KITTI
             KITTI.set_autopilot(True)
-
+            # KITTI.enable_constant_velocity(carla.Vector3D(17, 0, 0))
+            
             # Pass to the next simulator frame to spawn sensors and to retrieve first data
             world.tick()
             

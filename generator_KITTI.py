@@ -28,6 +28,9 @@ import numpy as np
 import random
 import threading
 
+SIGMA_LIDAR_NOISE = 0.03 #0.03 = std dev of the Velodyne HDL64E
+
+
 def sensor_callback(ts, sensor_data, sensor_queue):
     sensor_queue.put(sensor_data)
 
@@ -221,6 +224,11 @@ class HDL64E(Sensor):
             self.i_packet += 1
             if self.i_packet%self.packet_per_frame == 0:
                 pts_all = np.hstack(self.list_pts)
+                # add LiDAR noise
+                # print((pts_all.shape[1]));
+                pts_all[0,:] = pts_all[0,:] + SIGMA_LIDAR_NOISE*( 2*np.random.rand(1, (pts_all.shape[1])) - np.ones(pts_all.shape[1]) )
+                pts_all[1,:] = pts_all[1,:] + SIGMA_LIDAR_NOISE*( 2*np.random.rand(1, (pts_all.shape[1])) - np.ones(pts_all.shape[1]) )
+                pts_all[2,:] = pts_all[2,:] + SIGMA_LIDAR_NOISE*( 2*np.random.rand(1, (pts_all.shape[1])) - np.ones(pts_all.shape[1]) )
                 pts_all[0:3,:] = self.rotation_lidar_transpose.dot(pts_all[0:3,:])
                 pts_all = pts_all.T
                 semantic_all = np.hstack(self.list_semantic).T
@@ -336,6 +344,8 @@ def spawn_npc(client, nbr_vehicles, nbr_walkers, vehicles_list, all_walkers_id):
                 blueprints = [x for x in blueprints if not x.id.endswith('carlacola')]
                 blueprints = [x for x in blueprints if not x.id.endswith('cybertruck')]
                 blueprints = [x for x in blueprints if not x.id.endswith('t2')]
+                blueprints = [x for x in blueprints if not x.id.endswith('firetruck')] #agu
+                blueprints = [x for x in blueprints if not x.id.endswith('ambulance')] #agu
 
         blueprints = sorted(blueprints, key=lambda bp: bp.id)
 
@@ -394,7 +404,7 @@ def spawn_npc(client, nbr_vehicles, nbr_walkers, vehicles_list, all_walkers_id):
         # -------------
         # some settings
         walkers_list = []
-        percentagePedestriansRunning = 0.0            # how many pedestrians will run
+        percentagePedestriansRunning = 0.8            # how many pedestrians will run
         percentagePedestriansCrossing = 0.0         # how many pedestrians will walk through the road
         # 1. take all the random locations to spawn
         spawn_points = []
